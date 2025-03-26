@@ -4,15 +4,16 @@ import getQuotes from '../api/GetQuotes';
 
 function QuoteButton() {
   const [quote, setQuote] = useState(null);
-  const [buttonText, setButtonText] = useState('GET A QUOTE');
+  const [loading, setLoading] = useState(true);
 
   const fetchQuote = () => {
+    setLoading(true); // Set loading to true before fetching a quote
     getQuotes().then((data) => {
       if (data && data.quotes && data.quotes.length > 0) {
         const randomQuote = data.quotes[Math.floor(Math.random() * data.quotes.length)];
         setQuote(randomQuote.quote);
-        setButtonText('GET ANOTHER QUOTE');
       }
+      setLoading(false); // Set loading to false after quote is fetched
     });
   };
 
@@ -25,8 +26,8 @@ function QuoteButton() {
       <h1 id="quote-title">Quote of the Day</h1>
       <hr />
       <h3 id="quote-text">{quote || 'Loading...'}</h3>
-      <Button onClick={fetchQuote} id="quote-btn">
-        {buttonText}
+      <Button onClick={fetchQuote} id="quote-btn" disabled={loading}>
+        {loading ? 'Fetching quote...' : 'Get Another Quote'}
       </Button>
     </div>
   );
